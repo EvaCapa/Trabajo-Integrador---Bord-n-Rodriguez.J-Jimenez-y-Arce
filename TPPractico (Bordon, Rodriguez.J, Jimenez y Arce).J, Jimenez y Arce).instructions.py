@@ -1,0 +1,1 @@
+print("Encriptador profesional")
