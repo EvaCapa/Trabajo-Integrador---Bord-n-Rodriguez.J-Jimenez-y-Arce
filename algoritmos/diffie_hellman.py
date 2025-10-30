@@ -1,22 +1,37 @@
-import random
+# Simulación básica del intercambio de claves Diffie-Hellman
 
-def calcular(texto, clave_usuario):
-    p = 23
-    g = 5
-    clave_otro = random.randint(1, p-2)
-    clave_privada_usuario = int(clave_usuario)
-    clave_publica_otro = pow(g, clave_otro, p)
-    secreto = pow(clave_publica_otro, clave_privada_usuario, p)
-    
-    mensaje_cifrado = ""
-    for c in texto:
-        mensaje_cifrado += chr(ord(c) ^ (secreto % 256))
-    
-    return mensaje_cifrado, secreto
+def calcular(texto, clave):
+    try:
+        # Convertimos a enteros (parámetros públicos)
+        p = 23  # número primo
+        g = 5   # base (raíz primitiva)
+        a = int(texto)  # clave privada del usuario A
+        b = int(clave)  # clave privada del usuario B
 
-if __name__ == "__main__":
-    mensaje = input("Ingresa el mensaje a cifrar: ")
-    clave_usuario = input("Ingresa tu clave numérica secreta: ")
-    cifrado, secreto = calcular(mensaje, clave_usuario)
-    print(f"Mensaje cifrado: {cifrado}")
-    print(f"Clave secreta compartida: {secreto}")
+        # Claves públicas
+        A = (g ** a) % p
+        B = (g ** b) % p
+
+        # Claves compartidas
+        clave_A = (B ** a) % p
+        clave_B = (A ** b) % p
+
+        return f"""
+Parámetros públicos:
+p = {p}, g = {g}
+
+Claves privadas:
+a = {a}, b = {b}
+
+Claves públicas:
+A = {A}, B = {B}
+
+Clave compartida generada (igual para ambos):
+Clave_A = {clave_A}
+Clave_B = {clave_B}
+"""
+    except Exception as e:
+        return f"Error en el cálculo: {e}"
+
+def descifrar(texto, clave):
+    return "Diffie-Hellman no cifra texto directamente. Sirve para generar una clave compartida."

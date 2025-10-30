@@ -1,9 +1,12 @@
 def cifrar(texto, clave):
     resultado = ""
-    for c in texto:
-        if c.isalpha():
-            base = ord('A') if c.isupper() else ord('a')
-            resultado += chr((ord(c) - base + clave) % 26 + base)
+    for char in texto:
+        if char.isalpha():
+            base = ord('A') if char.isupper() else ord('a')
+            resultado += chr((ord(char) - base + clave) % 26 + base)
         else:
-            resultado += c
+            resultado += char
     return resultado
+
+def descifrar(texto, clave):
+    return cifrar(texto, -clave)

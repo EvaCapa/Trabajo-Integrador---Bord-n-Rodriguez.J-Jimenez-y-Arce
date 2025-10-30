@@ -5,9 +5,9 @@ from algoritmos import cesar, xor, vigenere, playfair, diffie_hellman, rsa
 def abrir_algoritmo(nombre):
     ventana = tk.Toplevel()
     ventana.title(nombre)
-    ventana.geometry("400x300")
+    ventana.geometry("400x350")
 
-    tk.Label(ventana, text=f"{nombre} - Cifrado", font=("Arial", 14, "bold")).pack(pady=10)
+    tk.Label(ventana, text=f"{nombre}", font=("Arial", 14, "bold")).pack(pady=10)
     
     tk.Label(ventana, text="Texto:").pack()
     entrada_texto = tk.Entry(ventana, width=40)
@@ -23,31 +23,60 @@ def abrir_algoritmo(nombre):
     def cifrar_texto():
         texto = entrada_texto.get()
         clave = entrada_clave.get()
-        if nombre == "Cifrado César":
-            res = cesar.cifrar(texto, int(clave))
-        elif nombre == "Cifrado XOR":
-            res = xor.cifrar(texto, clave)
-        elif nombre == "Cifrado Vigenère":
-            res = vigenere.cifrar(texto, clave)
-        elif nombre == "Cifrado Playfair":
-            res = playfair.cifrar_playfair(texto, clave)
-        elif nombre == "Diffie-Hellman":
-            res = diffie_hellman.calcular(texto, clave)
-        elif nombre == "RSA":
-            res = rsa.calcular(texto, clave)
-        else:
-            res = "Algoritmo no encontrado"
+        try:
+            if nombre == "Cifrado César":
+                res = cesar.cifrar(texto, int(clave))
+            elif nombre == "Cifrado XOR":
+                res = xor.cifrar(texto, clave)
+            elif nombre == "Cifrado Vigenère":
+                res = vigenere.cifrar(texto, clave)
+            elif nombre == "Cifrado Playfair":
+                res = playfair.cifrar_playfair(texto, clave)
+            elif nombre == "Diffie-Hellman":
+                res = diffie_hellman.calcular(texto, clave)
+            elif nombre == "RSA":
+                res = rsa.calcular(texto, clave)
+            else:
+                res = "Algoritmo no encontrado"
+        except Exception as e:
+            res = f"Error: {e}"
 
         resultado.delete("1.0", tk.END)
         resultado.insert(tk.END, res)
 
+    def descifrar_texto():
+        texto = entrada_texto.get()
+        clave = entrada_clave.get()
+        try:
+            if nombre == "Cifrado César":
+                res = cesar.descifrar(texto, int(clave))
+            elif nombre == "Cifrado XOR":
+                res = xor.descifrar(texto, clave)
+            elif nombre == "Cifrado Vigenère":
+                res = vigenere.descifrar(texto, clave)
+            elif nombre == "Cifrado Playfair":
+                res = playfair.descifrar_playfair(texto, clave)
+            elif nombre == "Diffie-Hellman":
+                res = "Este algoritmo no tiene descifrado directo"
+            elif nombre == "RSA":
+                res = "El descifrado RSA requiere claves privadas"
+            else:
+                res = "Algoritmo no encontrado"
+        except Exception as e:
+            res = f"Error: {e}"
+
+        resultado.delete("1.0", tk.END)
+        resultado.insert(tk.END, res)
+
+    # Botones
     tk.Button(ventana, text="Cifrar", command=cifrar_texto).pack(pady=5)
+    tk.Button(ventana, text="Descifrar", command=descifrar_texto).pack(pady=5)
     tk.Button(ventana, text="Cerrar", command=ventana.destroy).pack(pady=5)
 
 def mostrar_interfaz():
     root = tk.Tk()
     root.title("Elegí el algoritmo")
-    root.geometry("350x400")
+    root.geometry("350x420")
 
     tk.Label(root, text="Elegí un algoritmo de cifrado", font=("Arial", 16, "bold")).pack(pady=15)
 

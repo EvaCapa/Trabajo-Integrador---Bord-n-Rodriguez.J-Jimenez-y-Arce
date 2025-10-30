@@ -1,39 +1,37 @@
-import random
+# Implementación educativa de RSA
 
-def mcd(a, b):
-    while b != 0:
-        a, b = b, a % b
-    return a
-
-def inversa_modular(e, phi):
-    for d in range(2, phi):
-        if (d * e) % phi == 1:
-            return d
-    return None
-
-def generar_primos(clave_usuario):
-    primos = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
-    random.seed(int(clave_usuario))
-    p = random.choice(primos)
-    q = random.choice([x for x in primos if x != p])
-    return p, q
-
-def calcular(texto, clave_usuario):
-    p, q = generar_primos(clave_usuario)
+def generar_claves():
+    p = 61
+    q = 53
     n = p * q
     phi = (p - 1) * (q - 1)
+    e = 17  # exponente público
+    d = pow(e, -1, phi)  # inverso modular (clave privada)
+    return (e, n), (d, n)
 
-    e = 2
-    while e < phi:
-        if mcd(e, phi) == 1:
-            break
-        e += 1
+def cifrar(mensaje, clave_publica):
+    e, n = clave_publica
+    cifrado = [pow(ord(c), e, n) for c in mensaje]
+    return cifrado
 
-    d = inversa_modular(e, phi)
-    if d is None:
-        return calcular(texto, clave_usuario)
+def descifrar(cifrado, clave_privada):
+    d, n = clave_privada
+    texto = ''.join(chr(pow(c, d, n)) for c in cifrado)
+    return texto
 
-    mensaje_cifrado = [pow(ord(c), e, n) for c in texto]
-    mensaje_descifrado = "".join([chr(pow(c, d, n)) for c in mensaje_cifrado])
+def calcular(texto, clave):
+    try:
+        clave_publica, clave_privada = generar_claves()
+        cifrado = cifrar(texto, clave_publica)
+        descifrado = descifrar(cifrado, clave_privada)
+        return f"""
+Claves generadas:
+Pública: {clave_publica}
+Privada: {clave_privada}
 
-    return mensaje_cifrado, mensaje_descifrado
+Texto original: {texto}
+Texto cifrado (números): {cifrado}
+Texto descifrado: {descifrado}
+"""
+    except Exception as e:
+        return f"Error en RSA: {e}"
